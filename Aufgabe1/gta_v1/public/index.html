@@ -26,7 +26,21 @@
 				<h2>Tagging</h2>
 
 				<!-- ############### Aufgabe1a Form1 Start -->
-				<form id="tag-form" action="/tagging" method="post"></form>
+				<form id="tag-form" action="/tagging" method="post">
+					<fieldset>
+						<legend>Enter new GeoTag</legend>
+						<label for="latitude">latitude</label>
+						<input required id="latitude" name="latitude" type="number" step="any" placeholder="42.24069">
+						<label for="longitude">longitude</label>
+						<input required id="longitude" name="longitude" type="number" step="any" placeholder="3.124">
+						<label for="name">name</label>
+						<input required id="name" name="name" type="text" maxlength="10" placeholder="some name">
+						<label for="hashtag">hashtag</label>
+						<input id="hashtag" name="hashtag" type="text" maxlength="11" pattern="^#[A-z]+" placeholder="# + max. 10 letters">
+						<input id="submit" value="submit" name="submit" type="submit">
+
+					</fieldset>
+				</form>
 				<!-- ############### Aufgabe1a Form1 Ende -->
 
 			</section>
