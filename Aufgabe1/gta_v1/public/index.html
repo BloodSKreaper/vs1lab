@@ -51,24 +51,25 @@
 
         <!-- ############### Aufgabe1a Form2 Start -->
         <form id="filter-form" action="/discovery" method="post">
-        <fieldset>
-            <legend>Filter by Searchterm</legend>
-            <input type="text" id="searchterm" name="searchterm" placeholder="search term">
-            <input id="apply" value="apply" name="submit" type="submit">
-        </fieldset>
+            <fieldset>
+                <legend>Filter by Searchterm</legend>
+                <input type="text" id="searchterm" name="searchterm" placeholder="search term">
+                <input id="apply" value="apply" name="submit" type="submit">
+            </fieldset>
         </form>
         <!-- ############### Aufgabe1a Form2 Ende -->
+        <div class="container-tag">
+            <div class="taglist">
+                <ul id="results" type="none" >
+                    <li>Castle (49.01379, 8.404435) #sight</li>
+                    <li>IWI (49.01379, 8.390071) #edu</li>
+                </ul>
+            </div>
 
-        <div class="taglist">
-            <ul id="results">
-                <li>Castle (49.01379, 8.404435) #sight</li>
-                <li>IWI (49.01379, 8.390071) #edu</li>
-            </ul>
-        </div>
-
-        <div class="tagmap">
-            <img id="result-img" src="./images/mapview.jpg" alt="a map with locations"/>
-            <div class="caption">Result map</div>
+            <div class="tagmap">
+                <img id="result-img" src="./images/mapview.jpg" alt="a map with locations"/>
+                <div class="caption">Result map</div>
+            </div>
         </div>
 
     </section>
