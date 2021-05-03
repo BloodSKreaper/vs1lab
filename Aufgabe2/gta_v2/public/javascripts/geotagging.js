@@ -82,7 +82,7 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
     };
 
     // Hier API Key eintragen
-    var apiKey = "YOUR_API_KEY_HERE";
+    var apiKey = "Lg59AjpLTaw87fTokRohhp5GyP6i0rAp";
 
     /**
      * Funktion erzeugt eine URL, die auf die Karte verweist.
@@ -123,6 +123,8 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
             tryLocate(function (geo) {
                 document.getElementById("latitude").value = geo.coords.latitude;
                 document.getElementById("longitude").value = geo.coords.longitude;
+                mapUrl = getLocationMapSrc(geo.coords.latitude, geo.coords.longitude, undefined, undefined);
+                document.getElementById("result-img").src = mapUrl;
                 },function (msg) {
                 alert(msg);
             });
