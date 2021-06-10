@@ -30,9 +30,23 @@
             <fieldset>
                 <legend>Enter new GeoTag</legend>
                 <label for="latitude">latitude</label>
-                <input required id="latitude" name="latitude" type="number" step="any" placeholder="42.24069">
+                <!--<input required id="latitude" name="latitude" type="number" step="any" placeholder="42.24069">-->
+
+                <input required id="latitude" name="latitude" type="number" step="any" placeholder="42.24069"
+                    <% if(coordinates !== undefined) { %>
+                       value= <%= coordinates[0] %>
+                    <% } %>
+                >
+
                 <label for="longitude">longitude</label>
-                <input required id="longitude" name="longitude" type="number" step="any" placeholder="3.124">
+                <!--<input required id="longitude" name="longitude" type="number" step="any" placeholder="3.124">-->
+
+                <input required id="longitude" name="longitude" type="number" step="any" placeholder="3.124"
+                        <% if(coordinates !== undefined) { %>
+                       value= <%= coordinates[1] %>
+                       <% } %>
+                >
+
                 <label for="name">name</label>
                 <input required id="name" name="name" type="text" maxlength="10" placeholder="some name">
                 <label for="hashtag">hashtag</label>
@@ -56,9 +70,15 @@
                 <input type="text" id="searchterm" name="searchterm" placeholder="search term">
                 <input id="apply" value="apply" name="submit" type="submit">
                 <input type="hidden" id="latitudeDiscovery" name="latitude" type="number" step="any"
-                       placeholder="42.24069">
+                        <% if(coordinates !== undefined) { %>
+                       value= <%= coordinates[0] %>
+                       <% } %>
+                >
                 <input type="hidden" id="longitudeDiscovery" name="longitude" type="number" step="any"
-                       placeholder="3.124">
+                        <% if(coordinates !== undefined) { %>
+                       value= <%= coordinates[1] %>
+                       <% } %>
+                >
             </fieldset>
         </form>
         <!-- ############### Aufgabe1a Form2 Ende -->

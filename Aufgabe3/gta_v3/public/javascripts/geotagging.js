@@ -120,19 +120,27 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
         readme: "Dieses Objekt enthält 'öffentliche' Teile des Moduls.",
 
         updateLocation: function() {
-            tryLocate(function (geo) {
-                document.getElementById("latitude").value = geo.coords.latitude;
-                document.getElementById("longitude").value = geo.coords.longitude;
+            if(document.getElementById("latitude").value === "" ||
+                document.getElementById("longitude").value === "" ||
+                document.getElementById("latitudeDiscovery").value === "" ||
+                document.getElementById("longitudeDiscovery").value === "") {
+                console.log("hier");
+                tryLocate(function (geo) {
+                    document.getElementById("latitude").value = geo.coords.latitude;
+                    document.getElementById("longitude").value = geo.coords.longitude;
 
-                //Im Discovery Teil die hidden Werte latitude und longtitude auf aktuellen Wert setzen.
-                document.getElementById("latitudeDiscovery").value = geo.coords.latitude;
-                document.getElementById("longitudeDiscovery").value = geo.coords.longitude;
+                    //Im Discovery Teil die hidden Werte latitude und longtitude auf aktuellen Wert setzen.
+                    document.getElementById("latitudeDiscovery").value = geo.coords.latitude;
+                    document.getElementById("longitudeDiscovery").value = geo.coords.longitude;
 
-                mapUrl = getLocationMapSrc(geo.coords.latitude, geo.coords.longitude, undefined, undefined);
-                document.getElementById("result-img").src = mapUrl;
+                    mapUrl = getLocationMapSrc(geo.coords.latitude, geo.coords.longitude, undefined, undefined);
+                    document.getElementById("result-img").src = mapUrl;
                 },function (msg) {
-                alert(msg);
-            });
+                    alert(msg);
+                });
+            } else {
+                //do nothing
+            }
         }
 
     }; // ... Ende öffentlicher Teil
@@ -145,6 +153,5 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
  */
 $(function() {
     //alert("Please change the script 'geotagging.js'");
-    // TODO Hier den Aufruf für updateLocation einfügen
     gtaLocator.updateLocation();
 });

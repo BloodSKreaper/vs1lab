@@ -60,7 +60,7 @@ function deleteGeoTag(tag) {
     var index = 0;
     var indexOfElement;
     taglist.forEach(function (gtag) {
-        if (gtag == tag) {
+        if (gtag === tag) {
             indexOfElement = index;
         } else {
             index++;
@@ -103,7 +103,9 @@ function getGeoTagsByText(text) {
  */
 
 app.get('/', function (req, res) {
+    url_parts = new URL(req.url, 'http://${req.headers.host}');
     res.render('gta', {
+        coordinates : [url_parts.latitude, url_parts.longitude],
         taglist: []
     });
 });
@@ -129,6 +131,7 @@ app.post('/tagging', function (req, res) {
     addGeoTag(tag);
     console.log(req.body);
     res.render('gta', {
+        coordinates : [lat, long],
         taglist: getGeoTagsInRadius(long, lat, 100)
     });
 });
@@ -152,10 +155,12 @@ app.post('/discovery', function (req, res) {
     console.log(req.body);
     if(search === "") {
         res.render('gta',{
+            coordinates : [lat, long],
             taglist: getGeoTagsInRadius(long, lat, 100)
         });
     } else {
         res.render('gta',{
+            coordinates : [lat, long],
             taglist: getGeoTagsByText(search)
         });
     }
