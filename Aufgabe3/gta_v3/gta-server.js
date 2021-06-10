@@ -13,6 +13,7 @@ var http = require('http');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var express = require('express');
+//let radius = 100;
 
 var app;
 app = express();
@@ -50,7 +51,6 @@ function GeoTag(name, longitude, latitude, hashtag) {
  * - Funktion zum Löschen eines Geo Tags.
  */
 var taglist = [];
-exports.taglist = taglist;
 
 function addGeoTag(tag) {
     taglist.push(tag);
@@ -83,13 +83,13 @@ function getGeoTagsInRadius(longitude, latitude, radius) {
 }
 
 function getGeoTagsByText(text) {
-    var result;
+    var res = [];
     taglist.forEach(function (gtag) {
-        if (gtag.name == text || gtag.hashtag == text) {
-            result.push(gtag);
+        if (gtag.name === text || gtag.hashtag === text) {
+            res.push(gtag);
         }
     });
-    return result;
+    return res;
 
 }
 
@@ -127,7 +127,7 @@ app.post('/tagging', function (req, res) {
     hash = req.body.hashtag;
     tag = new GeoTag(name, long, lat, hash);
     addGeoTag(tag);
-    console.log(tag);
+    console.log(req.body);
     res.render('gta', {
         taglist: getGeoTagsInRadius(long, lat, 100)
     });
@@ -145,7 +145,21 @@ app.post('/tagging', function (req, res) {
  * Falls 'term' vorhanden ist, wird nach Suchwort gefiltert.
  */
 
-// TODO: CODE ERGÄNZEN
+app.post('/discovery', function (req, res) {
+    lat = req.body.latitude;
+    long = req.body.longitude;
+    search = req.body.searchterm;
+    console.log(req.body);
+    if(search === "") {
+        res.render('gta',{
+            taglist: getGeoTagsInRadius(long, lat, 100)
+        });
+    } else {
+        res.render('gta',{
+            taglist: getGeoTagsByText(search)
+        });
+    }
+});
 
 /**
  * Setze Port und speichere in Express.
