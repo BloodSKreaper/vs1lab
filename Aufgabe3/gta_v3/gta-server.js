@@ -28,15 +28,18 @@ app.set('view engine', 'ejs');
  * Konfiguriere den Pfad für statische Dateien.
  * Teste das Ergebnis im Browser unter 'http://localhost:3000/'.
  */
-
-// TODO: CODE ERGÄNZEN
+app.use(express.static(__dirname + "/public"));
 
 /**
  * Konstruktor für GeoTag Objekte.
  * GeoTag Objekte sollen min. alle Felder des 'tag-form' Formulars aufnehmen.
  */
-
-// TODO: CODE ERGÄNZEN
+function GeoTag(name, longitude, latitude, hashtag) {
+    this.name = name;
+    this.longitude = longitude;
+    this.latitude = latitude;
+    this.hashtag = hashtag;
+}
 
 /**
  * Modul für 'In-Memory'-Speicherung von GeoTags mit folgenden Komponenten:
@@ -46,8 +49,49 @@ app.set('view engine', 'ejs');
  * - Funktion zum hinzufügen eines Geo Tags.
  * - Funktion zum Löschen eines Geo Tags.
  */
+var taglist = [];
+exports.taglist = taglist;
 
-// TODO: CODE ERGÄNZEN
+function addGeoTag(tag) {
+    taglist.push(tag);
+}
+
+function deleteGeoTag(tag) {
+    var index = 0;
+    var indexOfElement;
+    taglist.forEach(function (gtag) {
+        if (gtag == tag) {
+            indexOfElement = index;
+        } else {
+            index++;
+        }
+    })
+    taglist.splice(indexOfElement);
+}
+
+function getGeoTagsInRadius(longitude, latitude, radius) {
+    var result;
+    taglist.forEach(function (gtag) {
+        var a = gtag.longitude - longitude;
+        var b = gtag.latitude - latitude;
+        var hypothenuse = Math.hypot(a, b);
+        if (hypothenuse <= radius) {
+            result.push(gtag);
+        }
+    });
+    return result;
+}
+
+function getGeoTagsByText(text) {
+    var result;
+    taglist.forEach(function (gtag) {
+        if (gtag.name == text || gtag.hashtag == text) {
+            result.push(gtag);
+        }
+    });
+    return result;
+
+}
 
 /**
  * Route mit Pfad '/' für HTTP 'GET' Requests.
@@ -58,7 +102,7 @@ app.set('view engine', 'ejs');
  * Als Response wird das ejs-Template ohne Geo Tag Objekte gerendert.
  */
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     res.render('gta', {
         taglist: []
     });
@@ -76,8 +120,22 @@ app.get('/', function(req, res) {
  * Als Response wird das ejs-Template mit Geo Tag Objekten gerendert.
  * Die Objekte liegen in einem Standard Radius um die Koordinate (lat, lon).
  */
+app.post('/tagging', function (req, res) {
+    long = req.body.longitude;
+    lat = req.body.latitude;
+    name = req.body.name;
+    hash = req.body.hashtag;
+    tag = new GeoTag(name, long, lat, hash);
+    console.log(tag);
+    addGeoTag(tag);
+    res.render('gta', {
+        taglist: getGeoTagsInRadius(long, lat, 100)
+    });
 
-// TODO: CODE ERGÄNZEN START
+
+    //Neues Geotag erstellen und speichern
+    //Antwort erstellen
+});
 
 /**
  * Route mit Pfad '/discovery' für HTTP 'POST' Requests.
