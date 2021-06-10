@@ -70,16 +70,16 @@ function deleteGeoTag(tag) {
 }
 
 function getGeoTagsInRadius(longitude, latitude, radius) {
-    var result;
+    var res = [];
     taglist.forEach(function (gtag) {
         var a = gtag.longitude - longitude;
         var b = gtag.latitude - latitude;
         var hypothenuse = Math.hypot(a, b);
         if (hypothenuse <= radius) {
-            result.push(gtag);
+            res.push(gtag);
         }
     });
-    return result;
+    return res;
 }
 
 function getGeoTagsByText(text) {
@@ -126,15 +126,11 @@ app.post('/tagging', function (req, res) {
     name = req.body.name;
     hash = req.body.hashtag;
     tag = new GeoTag(name, long, lat, hash);
-    console.log(tag);
     addGeoTag(tag);
+    console.log(tag);
     res.render('gta', {
         taglist: getGeoTagsInRadius(long, lat, 100)
     });
-
-
-    //Neues Geotag erstellen und speichern
-    //Antwort erstellen
 });
 
 /**
