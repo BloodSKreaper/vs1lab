@@ -120,11 +120,17 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
         readme: "Dieses Objekt enthält 'öffentliche' Teile des Moduls.",
 
         updateLocation: function() {
+            if (document.getElementById("result-img").dataset.tags === "" ||
+                document.getElementById("result-img").dataset.tags === "[]") {
+                tags = undefined;
+            } else {
+                tags = JSON.parse(document.getElementById("result-img").dataset.tags);
+            }
+
             if(document.getElementById("latitude").value === "" ||
                 document.getElementById("longitude").value === "" ||
                 document.getElementById("latitudeDiscovery").value === "" ||
                 document.getElementById("longitudeDiscovery").value === "") {
-                console.log("hier");
                 tryLocate(function (geo) {
                     document.getElementById("latitude").value = geo.coords.latitude;
                     document.getElementById("longitude").value = geo.coords.longitude;
@@ -133,13 +139,19 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
                     document.getElementById("latitudeDiscovery").value = geo.coords.latitude;
                     document.getElementById("longitudeDiscovery").value = geo.coords.longitude;
 
-                    mapUrl = getLocationMapSrc(geo.coords.latitude, geo.coords.longitude, undefined, undefined);
+                    //Map erzeugen
+                    mapUrl = getLocationMapSrc(geo.coords.latitude, geo.coords.longitude, tags, undefined);
                     document.getElementById("result-img").src = mapUrl;
                 },function (msg) {
                     alert(msg);
                 });
             } else {
-                //do nothing
+                //Zeichne Karte mit Koordinaten immer neu, könnten sich ja bei jedem Aufruf ändern?
+                //Unsicher hier prüfen ob das Sinn macht oder dämlich ist.
+                mapUrl = getLocationMapSrc(document.getElementById("latitudeDiscovery").value,
+                    document.getElementById("longitudeDiscovery").value,
+                    tags, undefined);
+                document.getElementById("result-img").src = mapUrl;
             }
         }
 
