@@ -1,0 +1,51 @@
+POST http://localhost:3000/geotags
+Content-Type: application/json
+
+{"name": "test","longitude": "8.4119674", "latitude": "48.986178199999996","hashtag": "#test"}
+###
+POST http://localhost:3000/geotags
+Content-Type: application/json
+
+{"name": "test2","longitude": "8.4119674", "latitude": "48.986178199999996","hashtag": "#test"}
+###
+GET http://localhost:3000/geotags
+Accept: application/json
+
+<> 2021-06-24T182349.200.json
+<> 2021-06-24T182032.200.json
+<> 2021-06-24T181823.200.json
+<> 2021-06-24T181658.200.json
+
+###
+GET http://localhost:3000/geotags/0
+Accept: application/json
+
+<> 2021-06-24T182349-1.200.json
+<> 2021-06-24T182042.200.json
+<> 2021-06-24T181823-1.200.json
+<> 2021-06-24T181658.404.html
+###
+PUT http://localhost:3000/geotags/0
+Content-Type: application/json
+Accept: application/json
+
+{"id":0,"name": "test1","longitude": "8.4119674", "latitude": "48.986178199999996","hashtag": "#test"}
+
+<> 2021-06-24T182349-2.200.json
+<> 2021-06-24T182058.200.json
+<> 2021-06-24T181823-2.200.json
+<> 2021-06-24T181658-1.200.json
+###
+DELETE http://localhost:3000/geotags/0
+###
+GET http://localhost:3000/geotags
+Accept: application/json
+
+<> 2021-06-24T182349-3.200.json
+<> 2021-06-24T182126.200.json
+<> 2021-06-24T181658-1.404.html
+<> 2021-06-24T181121.200.json
+<> 2021-06-24T181023.200.json
+<> 2021-06-24T180556.200.json
+
+###
