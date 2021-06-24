@@ -102,9 +102,11 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
         }
 
         var tagList = "&pois=You," + lat + "," + lon;
-        if (tags !== undefined) tags.forEach(function(tag) {
-            tagList += "|" + tag.name + "," + tag.latitude + "," + tag.longitude;
-        });
+        if (tags !== undefined){
+            tags.forEach(function(tag) {
+                tagList += "|" + tag.name + "," + tag.latitude + "," + tag.longitude;
+            });
+        }
 
         var urlString = "https://www.mapquestapi.com/staticmap/v4/getmap?key=" +
             apiKey + "&size=600,400&zoom=" + zoom + "&center=" + lat + "," + lon + "&" + tagList;
@@ -126,6 +128,7 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
                 tags = undefined;
             } else {
                 tags = JSON.parse(document.getElementById("result-img").dataset.tags);
+                console.log("Tags:" + tags);
             }
             //sicher stellen, dass Koordinaten existieren
             this.getLocation();
@@ -234,13 +237,12 @@ function eventHandlerTagging(event) {
     ajax.send(JSON.stringify(new GeoTag(document.getElementById("name").value, document.getElementById("longitude").value,
         document.getElementById("latitude").value, document.getElementById("hashtag").value)));
 
-    /*ajax.onreadystatechange = function () {
+    ajax.onreadystatechange = function () {
         if (ajax.readyState === 4) {
             console.log(ajax.response);
-            //updateMap(JSON.parse(ajax.response));
+            updateMap(JSON.parse(ajax.response));
         }
-    };*/
-    updateMap(null);
+    };
 }
 
 /**
@@ -267,6 +269,7 @@ function eventHandlerDiscovery(event) {
  */
 function updateMap(responseArray) {
     var list = "";
+    var gTagArray = [];
     if (responseArray !== null) {
         responseArray.forEach(function (gtag){
             name = gtag.name;
@@ -274,18 +277,16 @@ function updateMap(responseArray) {
             longitude = gtag.longitude;
             hashtag = gtag.hashtag;
             list+= "<li>"+name+"("+latitude+","+longitude+") "+hashtag+"</li>";
+            gTagArray.push(new GeoTag(name, longitude, latitude, hashtag));
         });
-        document.getElementById("result-img").dataset.tags = responseArray;
+        document.getElementById("result-img").dataset.tags = JSON.stringify(gTagArray);
     } else {
-
         document.getElementById("result-img").dataset.tags = "";
     }
-    console.log(list);
+    //console.log(list);
     document.getElementById("results").innerHTML = list;
-    //Kein Plan ob das hier Sinn macht!
     console.log("update map");
     gtaLocator.getMap();
-    //gtaLocator.updateLocation();
 }
 
 /**

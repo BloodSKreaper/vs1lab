@@ -194,10 +194,8 @@ app.post('/geotags', function (req, res) {
 
         addGeoTag(new GeoTag(postData.name, postData.longitude, postData.latitude, postData.hashtag));
 
-        res.render('gta', {
-            coordinates: [postData.latitude, postData.longitude],
-            taglist: getGeoTagsInRadius(postData.longitude, postData.latitude, 100)
-        });
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify(getGeoTagsInRadius(postData.longitude, postData.latitude, 100)));
     });
 
 });
