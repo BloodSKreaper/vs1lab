@@ -155,14 +155,14 @@ app.post('/discovery', function (req, res) {
     console.log(req.body);
     ret = getGeoTagsByText(search);
     console.log("ret : " + ret);
-    if(search === "" || getGeoTagsByText(search) === undefined) {
+    if(search === "" || ret === undefined) {
         res.render('gta',{
             coordinates : [lat, long],
             taglist: getGeoTagsInRadius(long, lat, 100)
         });
     } else {
         res.render('gta',{
-            taglist: getGeoTagsByText(search),
+            taglist: ret,
             coordinates : [ret[0].latitude, ret[0].longitude]
         });
     }

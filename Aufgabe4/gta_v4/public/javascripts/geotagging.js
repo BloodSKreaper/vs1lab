@@ -173,19 +173,8 @@ function GeoTag(name, longitude, latitude, hashtag) {
     this.hashtag = hashtag;
 }
 
-//ajax initialisieren
-var ajax = new XMLHttpRequest();
 
-/**
- * Methode für readystate changes
- */
-ajax.onreadystatechange = function () {
-    //if(ajax.readyState === 4) {
-        console.log("server state changed:" + ajax.readyState);
-        //ajax.setRequestHeader("Content-Type", "application/json");
-        //ajax.send(JSON.stringify({name: "test"}));
-    //}
-};
+
 
 /**
  * EventListener Methode für Tagging Button
@@ -193,7 +182,9 @@ ajax.onreadystatechange = function () {
 function eventHandlerTagging(event) {
     console.log("Daten senden:");
     //starte ajax verbindung und sende Daten
-    ajax.open("POST", "/tags", true);
+    //ajax initialisieren
+    var ajax = new XMLHttpRequest();
+    ajax.open("POST", "/geotags", true);
     ajax.setRequestHeader("Content-Type", "application/json");
     ajax.send(JSON.stringify(new GeoTag(document.getElementById("name").value, document.getElementById("longitude").value,
         document.getElementById("latitude").value, document.getElementById("hashtag").value)));
@@ -205,16 +196,35 @@ function eventHandlerTagging(event) {
  * EventListener Methode für Button Discovery
  */
 function eventHandlerDiscovery(event) {
-    ajax.open("GET", "/discovery", true);
+    var url = "/geotags?searchterm="+document.getElementById("searchterm").value;
+    //ajax initialisieren
+    var ajax = new XMLHttpRequest();
+    ajax.open("GET", url, true);
     ajax.send(null);
-
-    updateMap();
+    /**
+     * Methode für readystate changes
+     */
+    ajax.onreadystatechange = function () {
+        if(ajax.readyState === 4) {
+            updateMap(JSON.parse(ajax.response));
+        }
+    };
 }
 
 /**
  * Funktion zum aktualisieren der Ergebnisliste und Karte
  */
-function updateMap() {
+function updateMap(responseArray) {
+    var list = "";
+    responseArray.forEach(function (gtag){
+        name = gtag.name;
+        latitude = gtag.latitude;
+        longitude = gtag.longitude;
+        hashtag = gtag.hashtag;
+        list+= "<li>"+name+"("+latitude+","+longitude+") "+hashtag+"</li>";
+    });
+    console.log(list);
+    document.getElementById("results").innerHTML = list;
     //Kein Plan ob das hier Sinn macht!
     console.log("update map"); //@todo
     //gtaLocator.updateLocation();
@@ -227,10 +237,10 @@ function updateMap() {
  */
 $(function() {
     //alert("Please change the script 'geotagging.js'");
-    //gtaLocator.updateLocation();
+    gtaLocator.updateLocation();
 
     //EventListenerMethoden auf den Buttons registrieren.
     document.getElementById("submit").addEventListener("click", eventHandlerTagging, true);
-    //document.getElementById("apply").addEventListener("click", eventHandlerDiscovery, true);
+    document.getElementById("apply").addEventListener("click", eventHandlerDiscovery, true);
 
 });

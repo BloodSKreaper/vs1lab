@@ -90,7 +90,6 @@ function getGeoTagsByText(text) {
         }
     });
     return res;
-
 }
 
 /**
@@ -176,7 +175,7 @@ app.post('/discovery', function (req, res) {
 /**
  * Methode für das tagging widget
  */
-app.post('/tags', function (req, res) {
+app.post('/geotags', function (req, res) {
     var postData = "";
     //console.log("hier");
     //console.log(req.header("Content-Type"));
@@ -201,6 +200,17 @@ app.post('/tags', function (req, res) {
         });
     });
 
+});
+
+
+/**
+ * Methode für das discovery widget
+ */
+app.get('/geotags', function (req, res) {
+    search = req.query.searchterm;
+    ret = getGeoTagsByText(search);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(ret));
 });
 
 
