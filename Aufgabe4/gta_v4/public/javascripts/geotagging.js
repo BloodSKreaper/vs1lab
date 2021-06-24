@@ -119,6 +119,51 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
 
         readme: "Dieses Objekt enthält 'öffentliche' Teile des Moduls.",
 
+        getMap: function () {
+            //aktuelle Tags besorgen.
+            if (document.getElementById("result-img").dataset.tags === "" ||
+                document.getElementById("result-img").dataset.tags === "[]") {
+                tags = undefined;
+            } else {
+                tags = JSON.parse(document.getElementById("result-img").dataset.tags);
+            }
+            //sicher stellen, dass Koordinaten existieren
+            this.getLocation();
+
+            //Map URl erzeugen
+            mapUrl = getLocationMapSrc(document.getElementById("latitudeDiscovery").value,
+                document.getElementById("longitudeDiscovery").value, tags, undefined);
+
+            //MAP einbinden
+            document.getElementById("result-img").src = mapUrl;
+        },
+
+        getLocation: function () {
+            if(document.getElementById("latitude").value === "" ||
+                document.getElementById("longitude").value === "" ||
+                document.getElementById("latitudeDiscovery").value === "" ||
+                document.getElementById("longitudeDiscovery").value === "") {
+                tryLocate(function (geo) {
+                    document.getElementById("latitude").value = geo.coords.latitude;
+                    document.getElementById("longitude").value = geo.coords.longitude;
+
+                    //Im Discovery Teil die hidden Werte latitude und longtitude auf aktuellen Wert setzen.
+                    document.getElementById("latitudeDiscovery").value = geo.coords.latitude;
+                    document.getElementById("longitudeDiscovery").value = geo.coords.longitude;
+
+                    //map url erzeugen
+                    mapUrl = getLocationMapSrc(document.getElementById("latitudeDiscovery").value,
+                        document.getElementById("longitudeDiscovery").value, undefined, undefined);
+
+                    console.log(mapUrl);
+
+                    //MAP einbinden
+                    document.getElementById("result-img").src = mapUrl;
+                },function (msg) {
+                    alert(msg);
+                });
+            }},
+
         updateLocation: function() {
             if (document.getElementById("result-img").dataset.tags === "" ||
                 document.getElementById("result-img").dataset.tags === "[]") {
@@ -189,7 +234,13 @@ function eventHandlerTagging(event) {
     ajax.send(JSON.stringify(new GeoTag(document.getElementById("name").value, document.getElementById("longitude").value,
         document.getElementById("latitude").value, document.getElementById("hashtag").value)));
 
-    //updateMap();
+    /*ajax.onreadystatechange = function () {
+        if (ajax.readyState === 4) {
+            console.log(ajax.response);
+            //updateMap(JSON.parse(ajax.response));
+        }
+    };*/
+    updateMap(null);
 }
 
 /**
@@ -216,17 +267,24 @@ function eventHandlerDiscovery(event) {
  */
 function updateMap(responseArray) {
     var list = "";
-    responseArray.forEach(function (gtag){
-        name = gtag.name;
-        latitude = gtag.latitude;
-        longitude = gtag.longitude;
-        hashtag = gtag.hashtag;
-        list+= "<li>"+name+"("+latitude+","+longitude+") "+hashtag+"</li>";
-    });
+    if (responseArray !== null) {
+        responseArray.forEach(function (gtag){
+            name = gtag.name;
+            latitude = gtag.latitude;
+            longitude = gtag.longitude;
+            hashtag = gtag.hashtag;
+            list+= "<li>"+name+"("+latitude+","+longitude+") "+hashtag+"</li>";
+        });
+        document.getElementById("result-img").dataset.tags = responseArray;
+    } else {
+
+        document.getElementById("result-img").dataset.tags = "";
+    }
     console.log(list);
     document.getElementById("results").innerHTML = list;
     //Kein Plan ob das hier Sinn macht!
-    console.log("update map"); //@todo
+    console.log("update map");
+    gtaLocator.getMap();
     //gtaLocator.updateLocation();
 }
 
@@ -237,7 +295,7 @@ function updateMap(responseArray) {
  */
 $(function() {
     //alert("Please change the script 'geotagging.js'");
-    gtaLocator.updateLocation();
+    gtaLocator.getLocation();
 
     //EventListenerMethoden auf den Buttons registrieren.
     document.getElementById("submit").addEventListener("click", eventHandlerTagging, true);
