@@ -239,8 +239,12 @@ function eventHandlerTagging(event) {
 
     ajax.onreadystatechange = function () {
         if (ajax.readyState === 4) {
-            console.log(ajax.response);
-            updateMap(JSON.parse(ajax.response));
+            //console.log(ajax.response);
+            var gTagArray = JSON.parse(document.getElementById("result-img").dataset.tags);
+            gTagArray.push(new GeoTag(document.getElementById("name").value, document.getElementById("longitude").value,
+                document.getElementById("latitude").value, document.getElementById("hashtag").value));
+
+            updateMap(gTagArray);
         }
     };
 }
