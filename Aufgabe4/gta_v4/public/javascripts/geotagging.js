@@ -239,12 +239,18 @@ function eventHandlerTagging(event) {
 
     ajax.onreadystatechange = function () {
         if (ajax.readyState === 4) {
-            //console.log(ajax.response);
-            var gTagArray = JSON.parse(document.getElementById("result-img").dataset.tags);
+            console.log(ajax.response);
+            /*var gTagArray = JSON.parse(document.getElementById("result-img").dataset.tags);
             gTagArray.push(new GeoTag(document.getElementById("name").value, document.getElementById("longitude").value,
                 document.getElementById("latitude").value, document.getElementById("hashtag").value));
 
-            updateMap(gTagArray);
+             */
+            //updateMap(gTagArray);
+            var number = parseInt(document.getElementById("pages").dataset.number);
+            number++;
+            document.getElementById("pages").dataset.number = number.toString();
+            document.getElementById("pages").dataset.current = "1";
+            eventHandlerDiscovery(undefined);
         }
     };
 }
@@ -253,7 +259,8 @@ function eventHandlerTagging(event) {
  * EventListener Methode für Button Discovery
  */
 function eventHandlerDiscovery(event) {
-    var url = "/geotags?searchterm="+document.getElementById("searchterm").value;
+    var url = "/geotags?searchterm="+document.getElementById("searchterm").value + "&page=" +
+        (document.getElementById("pages").dataset.current-1);
     //ajax initialisieren
     var ajax = new XMLHttpRequest();
     ajax.open("GET", url, true);
@@ -276,12 +283,14 @@ function updateMap(responseArray) {
     var gTagArray = [];
     if (responseArray !== null) {
         responseArray.forEach(function (gtag){
-            name = gtag.name;
-            latitude = gtag.latitude;
-            longitude = gtag.longitude;
-            hashtag = gtag.hashtag;
-            list+= "<li>"+name+"("+latitude+","+longitude+") "+hashtag+"</li>";
-            gTagArray.push(new GeoTag(name, longitude, latitude, hashtag));
+            if (gtag !== null) {
+                name = gtag.name;
+                latitude = gtag.latitude;
+                longitude = gtag.longitude;
+                hashtag = gtag.hashtag;
+                list += "<li>" + name + "(" + latitude + "," + longitude + ") " + hashtag + "</li>";
+                gTagArray.push(new GeoTag(name, longitude, latitude, hashtag));
+            }
         });
         document.getElementById("result-img").dataset.tags = JSON.stringify(gTagArray);
     } else {
@@ -292,6 +301,50 @@ function updateMap(responseArray) {
     console.log("update map");
     gtaLocator.getMap();
 }
+
+/**
+ * Funktionen für Pages
+ */
+
+function eventHandlerLeft(event) {
+    if (parseInt(document.getElementById("pages").dataset.current) !== 1) {
+        var current = parseInt(document.getElementById("pages").dataset.current);
+        current--;
+        document.getElementById("pages").dataset.current = current.toString();
+        eventHandlerDiscovery(undefined);
+    } else {
+
+    }
+}
+
+function eventHandlerRight(event) {
+    if (document.getElementById("pages").dataset.number > tagsPerSite * document.getElementById("pages").dataset.current) {
+        var current = parseInt(document.getElementById("pages").dataset.current);
+        current++;
+        document.getElementById("pages").dataset.current = current.toString();
+        eventHandlerDiscovery(undefined);
+    }
+}
+
+function eventHandlerOne(event) {
+    if (parseInt(document.getElementById("pages").dataset.current) !== 1) {
+        document.getElementById("pages").dataset.current = "1";
+        eventHandlerDiscovery(undefined);
+    } else {
+
+    }
+}
+
+function eventHandlerTwo(event) {
+    if (parseInt(document.getElementById("pages").dataset.current) !== 2) {
+        document.getElementById("pages").dataset.current = "2";
+        eventHandlerDiscovery(undefined);
+    } else {
+
+    }
+}
+
+var tagsPerSite = 5;
 
 /**
  * $(function(){...}) wartet, bis die Seite komplett geladen wurde. Dann wird die
@@ -305,5 +358,8 @@ $(function() {
     //EventListenerMethoden auf den Buttons registrieren.
     document.getElementById("submit").addEventListener("click", eventHandlerTagging, true);
     document.getElementById("apply").addEventListener("click", eventHandlerDiscovery, true);
-
+    document.getElementById("left").addEventListener("click", eventHandlerLeft, true);
+    document.getElementById("right").addEventListener("click", eventHandlerRight, true);
+    document.getElementById("one").addEventListener("click", eventHandlerOne, true);
+    document.getElementById("two").addEventListener("click", eventHandlerTwo, true);
 });

@@ -84,12 +84,21 @@
         </form>
         <!-- ############### Aufgabe1a Form2 Ende -->
         <div class="container-tag">
-            <div class="taglist">
-                <ul id="results">
-                    <% if (taglist !== undefined) taglist.forEach(function(gtag) { %>
-                        <li><%= gtag.name %> ( <%= gtag.latitude %>,<%= gtag.longitude %>) <%= gtag.hashtag %> </li>
-                    <% }); %>
-                </ul>
+            <div class="page-buttons">
+                <div class="taglist">
+                    <ul id="results">
+                        <% if (taglist !== undefined) taglist.forEach(function(gtag) { %>
+                            <li><%= gtag.name %> ( <%= gtag.latitude %>,<%= gtag.longitude %>) <%= gtag.hashtag %> </li>
+                            <% }); %>
+                    </ul>
+                </div>
+
+                <div id="pages" data-current="1" data-number="0">
+                    <input id="left" value="<<" name="first" type="submit">
+                    <input id="one" value="1" name="one" type="submit">
+                    <input id="two" value="2" name="two" type="submit">
+                    <input id="right" value=">>" name="right" type="submit">
+                </div>
             </div>
 
             <div class="tagmap">

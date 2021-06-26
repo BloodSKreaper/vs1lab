@@ -160,13 +160,26 @@ app.post('/geotags', function (req, res) {
 app.get('/geotags', function (req, res) {
     let ret;
     let search = req.query.searchterm;
+    const parms = new URLSearchParams(req.query);
+    var page = parseInt(parms.get("page"));
+    console.log(page);
     if (search === undefined || search === "") {
         ret = taglist;
     } else {
         ret = getGeoTagsByText(search);
     }
+
+    var data = [];
+    for (var i = 0; i < tagsPerSite; i++) {
+        if (ret[i + tagsPerSite * page] !== undefined && ret[i + tagsPerSite * page] !== null) {
+            data.push(ret[i + tagsPerSite * page]);
+        } else {
+            data.push(null);
+        }
+    }
+
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(ret));
+    res.send(JSON.stringify(data));
 });
 
 app.put('/geotags/:id', function (req, res) {
@@ -219,11 +232,29 @@ app.get('/geotags/:id', function (req, res) {
     }
 });
 
+/*app.get('/geotags/pages/:id', function (req, res) {
+    var id = parseInt((req.params.id));
+    var search
+    id = id * tagsPerSite;
+    var iterator = id;
+    var answer = [];
+    while (iterator < id + tagsPerSite) {
+        if (taglist.length < iterator) {
+            answer.push(taglist[iterator]);
+        } else {
+            answer.push(null);
+        }
+        iterator++;
+    }
+    res.setHeader("content-Type", "application/json");
+    res.send(JSON.stringify(answer));
+});*/
 
 /**
  * Setze Port und speichere in Express.
  */
 
+var tagsPerSite = 5;
 var port = 3000;
 app.set('port', port);
 

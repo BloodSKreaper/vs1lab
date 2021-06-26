@@ -42,6 +42,13 @@ div.container-tag {
     margin-top: 1%;
 }
 
+div.page-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    justify-content: space-between;
+}
+
 main {
     display: flex;
     flex-direction: row;
