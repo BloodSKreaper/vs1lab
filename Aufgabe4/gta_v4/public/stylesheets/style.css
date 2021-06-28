@@ -49,6 +49,10 @@ div.page-buttons {
     justify-content: space-between;
 }
 
+#pages input{
+    background: #00B7FF;
+}
+
 main {
     display: flex;
     flex-direction: row;
